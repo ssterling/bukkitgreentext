@@ -1,0 +1,10 @@
+# I'm tired of seeing all these as untracked files
+
+# Vim files
+.*.sw[a-p]
+Session.vim
+.*.un~
+
+# Build files
+target/
+dependency-reduced-pom.xml

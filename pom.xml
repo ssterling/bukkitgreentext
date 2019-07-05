@@ -1,0 +1,117 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	                     http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<name>BukkitGreentext</name>
+	<description>Add 4chan-style quoting to Minecraft server chat</description>
+	<version>2.0</version>
+	<url>http://www.gitlab.com/ssterling/bukkitgreentext/</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<groupId>net.ssterling</groupId>
+	<artifactId>BukkitGreentext</artifactId>
+	<packaging>jar</packaging>
+
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>https://choosealicense.com/licenses/mit/</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>ssterling</id>
+			<name>Seth Price</name>
+			<email>ssterling@firemail.cc</email>
+			<url>http://www.ssterling.net/</url>
+			<roles>
+				<role>creator</role>
+				<role>developer</role>
+			</roles>
+			<timezone>America/New_York</timezone>
+			<properties>
+				<picUrl>https://www.ssterling.net/images/me/senior.jpg</picUrl>
+			</properties>
+		</developer>
+	</developers>
+
+
+	<scm>
+		<connection>scm:git:ssh://git@gitlab.com:ssterling/bukkitgreentext</connection>
+		<developerConnection>scm:git:ssh://git@gitlab.com:ssterling/bukkitgreentext</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://www.gitlab.com/ssterling/bukkitgreentext</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitLab</system>
+		<url>https://gitlab.com/ssterling/bukkitgreentext/issues</url>
+	</issueManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.14.3-R0.1-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>1.5</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<configuration>
+					<minimizeJar>true</minimizeJar>
+					<relocations>
+						<relocation>
+							<pattern>org.bstats</pattern>
+							<shadedPattern>net.ssterling.BukkitGreentext</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>CodeMC</id>
+			<url>https://repo.codemc.org/repository/maven-public</url>
+		</repository>
+	</repositories>
+</project>

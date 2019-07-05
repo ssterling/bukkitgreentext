@@ -1,0 +1,41 @@
+name: BukkitGreentext
+author: ssterling
+version: 2.0
+description: Add 4chan-style quoting to Minecraft server chat
+website: http://www.gitlab.com/ssterling/bukkitgreentext/
+
+main: net.ssterling.BukkitGreentext.BukkitGreentext
+api-version: 1.13
+awareness:
+        - !@UTF8
+
+commands:
+        greentext:
+                description: Toggle greentext features
+                usage: |-
+                        Usage:
+                          /greentext
+                          /greentext <on|off> [player]
+                          /greentext <on|off> global
+
+permissions:
+        greentext.chat.*:
+                description: Allow player to use all BukkitGreentext features
+                default: true
+                children:
+                        greentext.chat.green: true
+                        greentext.chat.orange: true
+        greentext.chat.green:
+                description: Allow player to create greentext
+                default: true
+        greentext.chat.orange:
+                description: Allow player to create orangetext
+                default: true
+        greentext.toggle:
+                description: Toggle greentext features per-player
+                default: true
+                children:
+                        greentext.toggle.others: false
+        greentext.toggle.others:
+                description: Toggle greentext features for other players
+                default: op
