@@ -32,7 +32,7 @@ import org.bukkit.ChatColor;
 
 /**
  * @author    Seth Price <ssterling AT firemail DOT cc>
- * @version   2.0
+ * @version   2.1
  * @since     1.0
  */
 public class BgtCommandExecutor implements CommandExecutor
@@ -47,27 +47,67 @@ public class BgtCommandExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
-		/* Convert CommandSender to Player type if sender is indeed a player */
-		Player player;
+		/* Why is all this better than a `switch' statement or something, you may ask?
+		 * It probably isn't, but it at least saves my sanity by doing a lot of the
+		 * processing all up here instead of copy-pasted several times throughout
+		 * a more computationally consuming cascade of `if-then' clauses. */
+
+		/* NOTE: the reason a lot of the following variables are initialised to `null',
+		 * `false', empty strings, etc. is because Maven screams unless they're
+		 * explicitly set with a value, even if they're never used. */
+
+		/* Determine whether command sender is a player; if so, convert to Player type */
+		Player player = null;
+		boolean is_player = false;
 		if (sender instanceof Player) {
 			player = (Player) sender;
-		} else {
-			/* Maven won't compile unless I explicitly initialise this */
-			player = null;
+			is_player = true;
 		}
 
-		/* For weird processing later */
-		boolean arg_enabled;
-		String enabled_disabled;
+		/* Determine whether sender sent too many arguments; if so, print usage */
+		if (args.length > 2) {
+			return false;
+		}
 
-		/* No arguments = same as `/greentext toggle' */
-		if (args.length == 0) {
-			/* Console can't use greentext hence cannot toggle it; exit */
-			if (!(sender instanceof Player)) {
-				sender.sendMessage("Console can only toggle greentext for players.");
-				return true;
+		/* Determine whether first argument (if present) is `on' or `off'; also,
+		 * set a string to `enabled' or `disabled' appropriately */
+		boolean arg_enabled = false;
+		String enabled_disabled = "";
+		if (args.length > 0) {
+			if (args[0].equalsIgnoreCase("on")) {
+				arg_enabled = true;
+				enabled_disabled = "enabled";
+			} else if (args[0].equalsIgnoreCase("off")) {
+				/* `arg_enabled' is already false */
+				enabled_disabled = "disabled";
+			} else {
+				/* Incorrect syntax; print usage */
+				return false;
 			}
+		}
 
+		/* Determine whether second argument (if present) is either `global'
+		 * or a valid player name (hopefully no one named `global' is online) */
+		boolean is_global = false;
+		Player target_player = null;
+		if (args.length == 2) {
+			if (args[1].equalsIgnoreCase("global")) {
+				is_global = true;
+			} else {
+				/* `is_global' is already false */
+				target_player = plugin.getServer().getPlayer(args[1]);
+				if (target_player == null) {
+					/* Player is either offline or invalid; exit */
+					sender.sendMessage("Player " + args[1] + " is nonexistent or offline.");
+					return true;
+				}
+			}
+		}
+
+		/*-------- actual command processing begins here --------*/
+
+		/* If a player sends `/greentext' with no arguments, toggle greentext on/off */
+		if (args.length == 0 && is_player) {
 			if (plugin.playerIsEnabled(player)) {
 				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " disabled.");
 				plugin.playerSetEnabled(player, false);
@@ -76,74 +116,61 @@ public class BgtCommandExecutor implements CommandExecutor
 				plugin.playerSetEnabled(player, true);
 			}
 			return true;
-		} else if (args.length > 2) {
-			/* Too many arguments */
-			return false;
 		}
-
-		/* This (as opposed to separate clauses for `on' and `off') involves some weird processing,
-		 * as you can see here, but it saves me from re-writing a whole lot of code in the end. */
-		if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
-
-			/* The spaces in `enabled_disabled' are necessary; see the concatenation below. */
-			if (args[0].equalsIgnoreCase("on")) {
-				arg_enabled = true;
-				enabled_disabled = " enabled";
-			} else {
-				arg_enabled = false;
-				enabled_disabled = " disabled";
+		/* If a player sends `/greentext <on|off>' with no target, set the status
+		 * for that player to the value specified in the command */
+		else if (args.length == 1 && is_player) {
+			/* If player doesn't have permission, exit */
+			if (!(player.hasPermission("greentext.toggle"))) {
+				sender.sendMessage(ChatColor.RED + "Insufficient permission to toggle greentext.");
+				return true;
 			}
 
-			if (args.length == 2) {
-				if (!(sender instanceof Player) || player.hasPermission("greentext.toggle.others")) {
-					/* Sorry for the guy whose IGN is `global' */
-					if (args[1].equalsIgnoreCase("global")) {
-						if (sender instanceof Player) {
-							sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + enabled_disabled + " globally.");
-						}
-						plugin.globalSetEnabled(arg_enabled);
-						return true;
-					} else {
-						Player targetPlayer = plugin.getServer().getPlayer(args[1]);
-						if (targetPlayer != null) {
-							if (sender instanceof Player) {
-								sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + enabled_disabled + " for player " + targetPlayer.getName() + ".");
-							}
-							plugin.playerSetEnabled(targetPlayer, arg_enabled);
-							return true;
-						} else {
-							sender.sendMessage("Player " + args[1] + " is nonexistent or offline.");
-							return true;
-						}
-					}
-				} else {
-					sender.sendMessage(ChatColor.RED + "Insufficient permission to toggle greentext for others.");
-					return true;
-				}
-			} else if (args.length == 1) {
-				/* Console can't use greentext hence cannot toggle it; exit */
-				if (!(sender instanceof Player)) {
-					sender.sendMessage("Console can only toggle greentext for players.");
-					return true;
-				}
-
-				if (player.hasPermission("greentext.toggle")) {
-					if (sender instanceof Player) {
-						sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + enabled_disabled + ".");
-					}
-					plugin.playerSetEnabled(player, arg_enabled);
-					return true;
-				} else {
-					sender.sendMessage(ChatColor.RED + "Insufficient permission to toggle greentext.");
-					return true;
-				}
-			} else {
-				/* Too many arguments */
-				return false;
+			/* Method `playerSetEnabled()' already logs to the console,
+			 * so only pretty-print to players */
+			if (is_player) {
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " " + enabled_disabled + ".");
 			}
+			plugin.playerSetEnabled(player, arg_enabled);
+			return true;
+		}
+		/* If either player or console sends `/greentext <on|off> player', set the status
+		 * for that player to the value specified in the command */
+		else if (args.length == 2 && !(is_global)) {
+			/* If sender is player and they doesn't have permission, exit */
+			if (is_player && !(player.hasPermission("greentext.toggle.others"))) {
+				sender.sendMessage(ChatColor.RED + "Insufficient permission to toggle greentext for others.");
+				return true;
+			}
+
+			/* Method `globalSetEnabled()' already logs to the console,
+			 * so only pretty-print to players */
+			if (is_player) {
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " " + enabled_disabled + " for player " + target_player.getName() + ".");
+			}
+			plugin.playerSetEnabled(target_player, arg_enabled);
+			return true;
+		}
+		/* If either player or console sends `/greentext <on|off> global', or console sends
+		 * `/greentext <on|off>', set the global status to the value specified in the command */
+		else if ((args.length == 1 && !(is_player)) || is_global) {
+			/* If sender is player and they doesn't have permission, exit */
+			if (is_player && !(player.hasPermission("greentext.toggle.others"))) {
+				sender.sendMessage(ChatColor.RED + "Insufficient permission to toggle greentext for others.");
+				return true;
+			}
+
+			/* Method `globalSetEnabled()' already logs to the console,
+			 * so only pretty-print to players */
+			if (is_player) {
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " " + enabled_disabled + " globally.");
+			}
+			plugin.globalSetEnabled(arg_enabled);
+			return true;
 		}
 
-		/* Argument is invalid */
+		/* If the command hasn't returned by now, there's been some sort of error;
+		 * just print usage and exit */
 		return false;
 	}
 }
