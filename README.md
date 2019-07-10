@@ -40,7 +40,7 @@ for `:` and `_` are specified in the config file.
 Custom exceptions are allowed as well, naturally.
 
 Greentext can be either enabled or disabled upon startup.
-In the case the parameter `enabled-on-startup` is set true,
+In the case the parameter `enabled-by-default` is set true,
 each player must manually enable the plugin with `/greentext on`.
 Additionally, orangetext, an obscure feature
 [used probably once](https://www.reddit.com/r/BannedFrom4chan/comments/221co5/),
