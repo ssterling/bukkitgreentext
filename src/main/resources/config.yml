@@ -5,6 +5,4 @@ exceptions:
         - ':'
         - '_'
         - '.'
-
-# Enable this only if you want oodles of log messages
 debug: false

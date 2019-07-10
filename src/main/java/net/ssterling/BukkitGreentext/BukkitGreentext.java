@@ -94,6 +94,21 @@ public class BukkitGreentext extends JavaPlugin
 			/* TODO: change logger level */
 		}
 
+		/* ...actually, go back and write the `debug' key to the config file
+		 * if it doesn't exist (was added in version 2.0) */
+		if (!(config.isSet("debug"))) {
+			getLogger().config("Updating configuration file with new `debug' key...");
+			/* If it didn't exist, `is_debug' holds the default value
+			 * since `saveDefaultConfig()' was called */
+			config.set("debug", is_debug);
+			try {
+				this.saveConfig();
+			} catch (Throwable ex) {
+				getLogger().warning("Failed to update configuration file.");
+				ex.printStackTrace();
+			}
+		}
+
 		getLogger().finest("Initialising player hashmap...");
 		enabled_for_player = new HashMap<UUID, Boolean>();
 
