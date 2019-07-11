@@ -26,11 +26,13 @@ package net.ssterling.BukkitGreentext;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.io.File;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -65,6 +67,18 @@ public class BukkitGreentext extends JavaPlugin
 	 * Whether debug messages are enabled.
 	 */
 	private static boolean is_debug;
+
+	/**
+	 * The file pointer for the persistent hashmap.
+	 */
+	private static File persistent_hashmap_file;
+
+	/**
+	 * The persistent hashmap file as a Bukkit configuration file.
+	 *
+	 * @see org.bukkit.configuration.file.FileConfiguration
+	 */
+	private static FileConfiguration persistent_hashmap;
 
 	private static PluginManager pm;
 	private static PluginDescriptionFile pdf;
@@ -112,6 +126,29 @@ public class BukkitGreentext extends JavaPlugin
 		getLogger().finest("Initialising player hashmap...");
 		enabled_for_player = new HashMap<UUID, Boolean>();
 
+		getLogger().info("Loading persistent hashmap from disk...");
+		try {
+			persistent_hashmap_file = new File(getDataFolder(), "playermap.yml");
+
+			/* Create the hashmap file if it doesn't exist */
+			if (!(persistent_hashmap_file.exists())) {
+				getLogger().fine("`playermap.yml' doesn't exist; creating");
+				saveResource("playermap.yml", false);
+			}
+
+			persistent_hashmap = new YamlConfiguration();
+			persistent_hashmap.load(persistent_hashmap_file);
+
+			/* Assign all the values to the in-memory HashMap */
+			for (String uuid : persistent_hashmap.getKeys(true)) {
+				/* TODO: overload method with UUID instead of Player object? */
+				enabled_for_player.put(UUID.fromString(uuid), persistent_hashmap.getBoolean(uuid));
+			}
+		} catch (Throwable ex) {
+			getLogger().warning("Failed to load persistent hashmap from disk.  All users will default to `" + String.valueOf(enabled_by_default) + "' (value of `enabled_by_default').");
+			ex.printStackTrace();
+		}
+
 		getLogger().finest("Registering chat listener...");
 		try {
 			pm.registerEvents(new BgtChatListener(this), this);
@@ -135,6 +172,23 @@ public class BukkitGreentext extends JavaPlugin
 		enabled_by_default = config.getBoolean("enabled-by-default");
 
 		getLogger().info("Successfully initialised " + pdf.getName() + " v" + pdf.getVersion());
+	}
+
+	@Override
+	public void onDisable()
+	{
+		getLogger().info("Saving persistent hashmap to disk...");
+		
+		for (UUID uuid : enabled_for_player.keySet()) {
+			persistent_hashmap.set(uuid.toString(), enabled_for_player.get(uuid));
+		}
+
+		try {
+			persistent_hashmap.save(persistent_hashmap_file);
+		} catch (Throwable ex) {
+			getLogger().warning("Failed to save persistent hashmap to disk.");
+			ex.printStackTrace();
+		}
 	}
 
 	/**
