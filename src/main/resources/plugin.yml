@@ -17,6 +17,7 @@ commands:
                           /greentext
                           /greentext <on|off> [player]
                           /greentext <on|off> global
+                aliases: [bukkitgreentext, bgt]
 
 permissions:
         greentext.chat.*:
