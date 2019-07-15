@@ -96,8 +96,9 @@ public class BgtCommandExecutor implements CommandExecutor
 			} else {
 				/* `is_global' is already false */
 				target_player = plugin.getServer().getPlayer(args[1]);
+
+				/* Player is either offline or invalid; exit */
 				if (target_player == null) {
-					/* Player is either offline or invalid; exit */
 					sender.sendMessage("Player " + args[1] + " is nonexistent or offline.");
 					return true;
 				}
@@ -126,6 +127,12 @@ public class BgtCommandExecutor implements CommandExecutor
 				return true;
 			}
 
+			/* Player already has status set to value; ignore */
+			if (plugin.playerIsEnabled(player) == arg_enabled) {
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " already " + enabled_disabled + ".");
+				return true;
+			}
+
 			/* Method `playerSetEnabled()' already logs to the console,
 			 * so only pretty-print to players */
 			if (is_player) {
@@ -143,6 +150,17 @@ public class BgtCommandExecutor implements CommandExecutor
 				return true;
 			}
 
+			/* Player already has status set to value; ignore */
+			if (plugin.playerIsEnabled(target_player) == arg_enabled) {
+				/* Again, to keep consistency with the uncoloured console messages */
+				if (is_player) {
+					sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " already " + enabled_disabled + " for player " + target_player.getName() + ".");
+				} else {
+					sender.sendMessage("Greentext already " + enabled_disabled + " for player " + target_player.getName());
+				}
+				return true;
+			}
+
 			/* Method `globalSetEnabled()' already logs to the console,
 			 * so only pretty-print to players */
 			if (is_player) {
@@ -157,6 +175,17 @@ public class BgtCommandExecutor implements CommandExecutor
 			/* If sender is player and they doesn't have permission, exit */
 			if (is_player && !(player.hasPermission("greentext.toggle.others"))) {
 				sender.sendMessage(ChatColor.RED + "Insufficient permission to toggle greentext for others.");
+				return true;
+			}
+
+			/* Player already has status set to value; ignore */
+			if (plugin.globalIsEnabled() == arg_enabled) {
+				/* Yet again, to keep consistency with the uncoloured console messages */
+				if (is_player) {
+					sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " already " + enabled_disabled + " globally.");
+				} else {
+					sender.sendMessage("Greentext already " + enabled_disabled + " globally");
+				}
 				return true;
 			}
 
