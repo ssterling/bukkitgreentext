@@ -67,7 +67,6 @@ when I debug my subpar code.
 
 ### Some to-do
 
-* Make HashMap of player toggle persistent (via YAML file?)
 * Separate exceptions for orangetext and greentext
 * Toggle orangetext separately from greentext
 * Support for reply reference (`>>31337`) and board reference (`>>>/out/`)
