@@ -27,6 +27,11 @@ package net.ssterling.BukkitGreentext;
 import java.util.HashMap;
 import java.util.UUID;
 import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
@@ -41,7 +46,7 @@ import org.bstats.bukkit.Metrics;
 
 /**
  * @author	Seth Price <ssterling AT firemail DOT cc>
- * @version	2.0
+ * @version	2.2
  * @since	1.0
  */
 public class BukkitGreentext extends JavaPlugin
@@ -67,6 +72,16 @@ public class BukkitGreentext extends JavaPlugin
 	 * Whether debug messages are enabled.
 	 */
 	private static boolean is_debug;
+
+	/**
+	 * Whether to check for updates on startup.
+	 */
+	private static boolean check_for_updates;
+
+	/**
+	 * Spigot project ID (for update checker).
+	 */
+	private static int project_id = 55295;
 
 	/**
 	 * The file pointer for the persistent hashmap.
@@ -115,6 +130,20 @@ public class BukkitGreentext extends JavaPlugin
 			/* If it didn't exist, `is_debug' holds the default value
 			 * since `saveDefaultConfig()' was called */
 			config.set("debug", is_debug);
+			try {
+				this.saveConfig();
+			} catch (Throwable ex) {
+				getLogger().warning("Failed to update configuration file.");
+				ex.printStackTrace();
+			}
+		}
+
+		/* Likewise, add `check-for-updates' if nonexistent (added in version 2.2) */
+		check_for_updates = config.getBoolean("check-for-updates");
+		if (!(config.isSet("check-for-updates"))) {
+			getLogger().config("Updating configuration file with new `check-for-updates' key...");
+			/* Like above, `check_for_updates' holds the default value */
+			config.set("check-for-updates", check_for_updates);
 			try {
 				this.saveConfig();
 			} catch (Throwable ex) {
@@ -172,6 +201,30 @@ public class BukkitGreentext extends JavaPlugin
 		enabled_by_default = config.getBoolean("enabled-by-default");
 
 		getLogger().info("Successfully initialised " + pdf.getName() + " v" + pdf.getVersion());
+
+		/* Check for updates on the Spigot resource page
+		 * (XXX this will work even if current version is newer, i.e. unreleased SNAPSHOT;
+		 * this is to keep things simple as 99.8% of people won't be building something
+		 * like this from the repo) */
+		if (check_for_updates) {
+			getLogger().fine("Checking for updates...");
+			/* I prepend `v' to verison numbering, so direct comparison won't work */
+			String current_version = "v" + pdf.getVersion();
+			try {
+				URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + project_id);
+				URLConnection update_conn = update_url.openConnection();
+				String new_version = new BufferedReader(new InputStreamReader(update_conn.getInputStream())).readLine();
+				if (!(new_version.equals(current_version))) {
+					getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + project_id + "/>");
+				} else {
+					getLogger().info("No new version found");
+				}
+			} catch (Throwable ex) {
+				getLogger().warning("Failed to check for updates");
+				ex.printStackTrace();
+			}
+		}
+
 	}
 
 	@Override

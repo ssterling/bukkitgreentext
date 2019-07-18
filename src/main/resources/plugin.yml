@@ -1,6 +1,6 @@
 name: BukkitGreentext
 author: ssterling
-version: 2.1
+version: 2.2.0-SNAPSHOT
 description: Add 4chan-style quoting to Minecraft server chat
 website: http://www.gitlab.com/ssterling/bukkitgreentext/
 
