@@ -208,8 +208,7 @@ public class BukkitGreentext extends JavaPlugin
 		 * like this from the repo) */
 		if (check_for_updates) {
 			getLogger().fine("Checking for updates...");
-			/* I prepend `v' to verison numbering, so direct comparison won't work */
-			String current_version = "v" + pdf.getVersion();
+			String current_version = pdf.getVersion();
 			try {
 				URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + project_id);
 				URLConnection update_conn = update_url.openConnection();
