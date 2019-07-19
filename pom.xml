@@ -21,6 +21,7 @@
 		<license>
 			<name>MIT</name>
 			<url>https://choosealicense.com/licenses/mit/</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
