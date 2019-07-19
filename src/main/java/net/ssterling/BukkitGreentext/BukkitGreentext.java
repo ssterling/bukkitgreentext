@@ -321,6 +321,12 @@ public class BukkitGreentext extends JavaPlugin
 		if (message.startsWith(">")) {
 			getLogger().fine("Message begins with `>'; checking whether it's greentext: `" + message + "'");
 
+			/* Make sure the message isn't just a `>' */
+			if (message.length() == 1) {
+				getLogger().fine("Aforementioned message contains only a `>'; ignoring");
+				return false;
+			}
+
 			/* Cycles through exceptions in `config.yml'.
 			 * For example, if `:' is listed as an exception,
 			 * any message starting with `>:' isn't greenified,
@@ -350,6 +356,11 @@ public class BukkitGreentext extends JavaPlugin
 		getLogger().finest("Message passed to `isValidOrangetext()'; checking whether it ends with `<': `" + message + "'");
 		if (message.endsWith("<")) {
 			getLogger().fine("Message ends with `<'; checking whether it's orangetext: `" + message + "'");
+			/* Similarly, make sure the message isn't just a `<' */
+			if (message.length() == 1) {
+				getLogger().fine("Aforementioned message contains only a `<'; ignoring");
+				return false;
+			}
 
 			/* Same concept as in isValidGreentext() */
 			for (String exception : config.getStringList("exceptions")) {
