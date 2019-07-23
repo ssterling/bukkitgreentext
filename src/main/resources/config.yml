@@ -1,7 +1,11 @@
 check-for-permission: false
 allow-orangetext: true
 enabled-by-default: true
-exceptions:
+greentext-exceptions:
+        - ':'
+        - '_'
+        - '.'
+orangetext-exceptions:
         - ':'
         - '_'
         - '.'

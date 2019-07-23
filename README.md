@@ -67,7 +67,6 @@ when I debug my subpar code.
 
 ### Some to-do
 
-* Separate exceptions for orangetext and greentext
 * Toggle orangetext separately from greentext
 * Support for reply reference (`>>31337`) and board reference (`>>>/out/`)
 

@@ -26,6 +26,7 @@ package net.ssterling.BukkitGreentext;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.List;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -144,6 +145,23 @@ public class BukkitGreentext extends JavaPlugin
 			getLogger().config("Updating configuration file with new `check-for-updates' key...");
 			/* Like above, `check_for_updates' holds the default value */
 			config.set("check-for-updates", check_for_updates);
+			try {
+				this.saveConfig();
+			} catch (Throwable ex) {
+				getLogger().warning("Failed to update configuration file.");
+				ex.printStackTrace();
+			}
+		}
+
+		/* Finally, separate orangetext and greentext exceptions if not yet done */
+		if (config.isSet("exceptions") &&
+		    !(config.isSet("greentext-exceptions") || config.isSet("orangetext-exceptions"))) {
+			getLogger().config("Updating configuration file to have separate `greentext-exception' and `orangetext-exception' lists (cloning contents of `exceptions)");
+			/* Clone the values of `exceptions' to the specific lists and remove `exceptions' */
+			List<String> exceptions_tmp = config.getStringList("exceptions");
+			config.set("greentext-exceptions", exceptions_tmp);
+			config.set("orangetext-exceptions", exceptions_tmp);
+			config.set("exceptions", null);
 			try {
 				this.saveConfig();
 			} catch (Throwable ex) {
@@ -331,7 +349,7 @@ public class BukkitGreentext extends JavaPlugin
 			 * For example, if `:' is listed as an exception,
 			 * any message starting with `>:' isn't greenified,
 			 * such as in emoticons, e.g. `>:('. */
-			 for (String exception : config.getStringList("exceptions")) {
+			 for (String exception : config.getStringList("greentext-exceptions")) {
 				 if (message.startsWith(">" + exception)) {
 					 getLogger().fine("Aforementioned message begins with exception `>" + exception + "'; ignoring");
 					 return false;
@@ -363,7 +381,7 @@ public class BukkitGreentext extends JavaPlugin
 			}
 
 			/* Same concept as in isValidGreentext() */
-			for (String exception : config.getStringList("exceptions")) {
+			for (String exception : config.getStringList("orangetext-exceptions")) {
 				 if (message.endsWith(exception + "<")) {
 					 getLogger().fine("Aforementioned message ends with exception `" + exception + "<'; ignoring");
 					 return false;
