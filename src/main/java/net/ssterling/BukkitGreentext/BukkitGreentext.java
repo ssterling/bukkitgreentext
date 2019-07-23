@@ -82,7 +82,7 @@ public class BukkitGreentext extends JavaPlugin
 	/**
 	 * Spigot project ID (for update checker).
 	 */
-	private static int project_id = 55295;
+	private static final int PROJECT_ID = 55295;
 
 	/**
 	 * The file pointer for the persistent hashmap.
@@ -228,11 +228,11 @@ public class BukkitGreentext extends JavaPlugin
 			getLogger().fine("Checking for updates...");
 			String current_version = pdf.getVersion();
 			try {
-				URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + project_id);
+				URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + PROJECT_ID);
 				URLConnection update_conn = update_url.openConnection();
 				String new_version = new BufferedReader(new InputStreamReader(update_conn.getInputStream())).readLine();
 				if (!(new_version.equals(current_version))) {
-					getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + project_id + "/>");
+					getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
 				} else {
 					getLogger().info("No new version found");
 				}
