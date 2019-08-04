@@ -1,16 +1,23 @@
 Changelog
 =========
 
-v2.1 (2019/07/15)
------------------
+v2.2.0 (2019/08/03)
+-------------------
+
+* Added automatic update checker
+* Separated exceptions for greentext and orangetext
+* Stopped greenifier from greenifying empty messages
+
+v2.1.0 (2019/07/15)
+-------------------
 
 * Added persistent map of player status
 * Added message if player is already enabled/disabled
 * Added command aliases: `bgt`, `bukkitgreentext`
-* Re-write command parser to be more efficient
+* Re-wrote command parser to be more efficient
 
 
-v2.0 (2019/07/05)
------------------
+v2.0.0 (2019/07/05)
+-------------------
 
 * Initial (re-)release
