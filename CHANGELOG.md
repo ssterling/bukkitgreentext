@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v2.2.1 (2020/01/01)
+-------------------
+
+* Changed update checker to not print stack trace on fail
+
 v2.2.0 (2019/08/03)
 -------------------
 

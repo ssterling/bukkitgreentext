@@ -237,8 +237,9 @@ public class BukkitGreentext extends JavaPlugin
 					getLogger().info("No new version found");
 				}
 			} catch (Throwable ex) {
-				getLogger().warning("Failed to check for updates");
-				ex.printStackTrace();
+				/* Don't spam a warning + stack trace on something so trivial
+				 * (especially if server isn't connected to the Internet) */
+				getLogger().info("Failed to check for updates");
 			}
 		}
 

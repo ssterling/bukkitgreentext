@@ -6,7 +6,7 @@
 
 	<name>BukkitGreentext</name>
 	<description>Add 4chan-style quoting to Minecraft server chat</description>
-	<version>2.2.0</version>
+	<version>2.2.1</version>
 	<url>http://www.gitlab.com/ssterling/bukkitgreentext/</url>
 
 	<properties>
