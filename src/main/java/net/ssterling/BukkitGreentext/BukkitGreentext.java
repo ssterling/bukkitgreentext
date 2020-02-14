@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.List;
 import java.io.File;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -124,50 +125,34 @@ public class BukkitGreentext extends JavaPlugin
 			/* TODO: change logger level */
 		}
 
-		/* ...actually, go back and write the `debug' key to the config file
-		 * if it doesn't exist (was added in version 2.0) */
-		if (!(config.isSet("debug"))) {
-			getLogger().config("Updating configuration file with new `debug' key...");
-			/* If it didn't exist, `is_debug' holds the default value
-			 * since `saveDefaultConfig()' was called */
-			config.set("debug", is_debug);
-			try {
-				this.saveConfig();
-			} catch (Throwable ex) {
-				getLogger().warning("Failed to update configuration file.");
-				ex.printStackTrace();
-			}
-		}
+		getLogger().config("Checking for discrepancies between default config and user config...");
+		try {
+			/* Load default `config.yml' from inside JAR */
+			InputStream default_config_inputstream = getResource("config.yml");
+			InputStreamReader default_config_reader = new InputStreamReader(default_config_inputstream);
+			FileConfiguration default_config = YamlConfiguration.loadConfiguration(default_config_reader);
 
-		/* Likewise, add `check-for-updates' if nonexistent (added in version 2.2) */
-		check_for_updates = config.getBoolean("check-for-updates");
-		if (!(config.isSet("check-for-updates"))) {
-			getLogger().config("Updating configuration file with new `check-for-updates' key...");
-			/* Like above, `check_for_updates' holds the default value */
-			config.set("check-for-updates", check_for_updates);
-			try {
-				this.saveConfig();
-			} catch (Throwable ex) {
-				getLogger().warning("Failed to update configuration file.");
-				ex.printStackTrace();
+			/* Add new config keys (i.e. added to the program since
+			 * the config file was last generated/updated) */
+			for (String key : default_config.getConfigurationSection("").getKeys(false)) {
+				if (!(config.isSet(key))) {
+					getLogger().config("Adding new key `" + key + "' to config file");
+					config.set(key, default_config.get(key));
+				}
 			}
-		}
 
-		/* Finally, separate orangetext and greentext exceptions if not yet done */
-		if (config.isSet("exceptions") &&
-		    !(config.isSet("greentext-exceptions") || config.isSet("orangetext-exceptions"))) {
-			getLogger().config("Updating configuration file to have separate `greentext-exception' and `orangetext-exception' lists (cloning contents of `exceptions)");
-			/* Clone the values of `exceptions' to the specific lists and remove `exceptions' */
-			List<String> exceptions_tmp = config.getStringList("exceptions");
-			config.set("greentext-exceptions", exceptions_tmp);
-			config.set("orangetext-exceptions", exceptions_tmp);
-			config.set("exceptions", null);
-			try {
-				this.saveConfig();
-			} catch (Throwable ex) {
-				getLogger().warning("Failed to update configuration file.");
-				ex.printStackTrace();
+			/* Remove old config keys that no longer exist */
+			for (String key : config.getConfigurationSection("").getKeys(false)) {
+				if (!(default_config.isSet(key))) {
+					getLogger().config("Removing old key `" + key + "' from config file");
+					config.set(key, null);
+				}
 			}
+
+			saveConfig();
+		} catch (Throwable ex) {
+			getLogger().warning("Failed to update configuration file.");
+			ex.printStackTrace();
 		}
 
 		getLogger().finest("Initialising player hashmap...");
