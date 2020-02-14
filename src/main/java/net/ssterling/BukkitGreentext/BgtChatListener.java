@@ -57,7 +57,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 			if (((check_perms && player.hasPermission("greentext.chat.green")) || ! check_perms)
 			    && plugin.isValidGreentext(e.getMessage())) {
 				plugin.eventMakeGreentext(e);
-			} else if (((check_perms && player.hasPermission("greentext.chat.orange")) || ! check_perms)
+			} else if (plugin.config.getBoolean("allow-orangetext")
+			           && ((check_perms && player.hasPermission("greentext.chat.orange")) || ! check_perms)
 			           && plugin.isValidOrangetext(e.getMessage())) {
 				plugin.eventMakeOrangetext(e);
 			}

@@ -9,5 +9,4 @@ orangetext-exceptions:
         - ':'
         - '_'
         - '.'
-debug: false
 check-for-updates: true

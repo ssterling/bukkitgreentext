@@ -27,6 +27,7 @@ package net.ssterling.BukkitGreentext;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.List;
+import java.util.logging.Level;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -76,11 +77,6 @@ public class BukkitGreentext extends JavaPlugin
 	private static boolean is_debug;
 
 	/**
-	 * Whether to check for updates on startup.
-	 */
-	private static boolean check_for_updates;
-
-	/**
 	 * Spigot project ID (for update checker).
 	 */
 	private static final int PROJECT_ID = 55295;
@@ -118,16 +114,10 @@ public class BukkitGreentext extends JavaPlugin
 			ex.printStackTrace();
 		}
 
-		/* Before anything else, check whether we want the debug messages */
-		is_debug = config.getBoolean("debug");
-		if (is_debug) {
-			getLogger().info("Entering debug mode (set in config.yml)");
-			/* TODO: change logger level */
-		}
-
 		getLogger().config("Checking for discrepancies between default config and user config...");
 		try {
 			/* Load default `config.yml' from inside JAR */
+			getLogger().finest("Loading default `config.yml'...");
 			InputStream default_config_inputstream = getResource("config.yml");
 			InputStreamReader default_config_reader = new InputStreamReader(default_config_inputstream);
 			FileConfiguration default_config = YamlConfiguration.loadConfiguration(default_config_reader);
@@ -149,6 +139,7 @@ public class BukkitGreentext extends JavaPlugin
 				}
 			}
 
+			getLogger().fine("Saving new config to `config.yml'...");
 			saveConfig();
 		} catch (Throwable ex) {
 			getLogger().warning("Failed to update configuration file.");
@@ -205,29 +196,31 @@ public class BukkitGreentext extends JavaPlugin
 
 		getLogger().info("Successfully initialised " + pdf.getName() + " v" + pdf.getVersion());
 
-		/* Check for updates on the Spigot resource page
+		/* Asynchronously check for updates on the Spigot resource page
 		 * (XXX this will work even if current version is newer, i.e. unreleased SNAPSHOT;
 		 * this is to keep things simple as 99.8% of people won't be building something
 		 * like this from the repo) */
-		if (check_for_updates) {
-			getLogger().fine("Checking for updates...");
-			String current_version = pdf.getVersion();
-			try {
-				URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + PROJECT_ID);
-				URLConnection update_conn = update_url.openConnection();
-				String new_version = new BufferedReader(new InputStreamReader(update_conn.getInputStream())).readLine();
-				if (!(new_version.equals(current_version))) {
-					getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
-				} else {
-					getLogger().info("No new version found");
+		Thread update_checker = new Thread(() -> {
+			if (config.getBoolean("check-for-updates")) {
+				getLogger().fine("Checking for updates...");
+				String current_version = pdf.getVersion();
+				try {
+					URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + PROJECT_ID);
+					URLConnection update_conn = update_url.openConnection();
+					String new_version = new BufferedReader(new InputStreamReader(update_conn.getInputStream())).readLine();
+					if (!(new_version.equals(current_version))) {
+						getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
+					} else {
+						getLogger().info("No new version found");
+					}
+				} catch (Throwable ex) {
+					/* Don't spam a warning + stack trace on something so trivial
+					 * (especially if server isn't connected to the Internet) */
+					getLogger().info("Failed to check for updates");
 				}
-			} catch (Throwable ex) {
-				/* Don't spam a warning + stack trace on something so trivial
-				 * (especially if server isn't connected to the Internet) */
-				getLogger().info("Failed to check for updates");
 			}
-		}
-
+		});
+		update_checker.start();
 	}
 
 	@Override
