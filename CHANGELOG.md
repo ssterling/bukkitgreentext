@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v2.2.2 (2020/02/14)
+-------------------
+
+* Fixed update checker to actually check for updates
+* Fixed orangetext routine to actually check for permissions
+* Moved update checking to post-init
+* Removed useless plugin-specific debug option
+
 v2.2.1 (2020/01/01)
 -------------------
 
