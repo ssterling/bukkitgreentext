@@ -95,7 +95,7 @@
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
-							<shadedPattern>net.ssterling.BukkitGreentext</shadedPattern>
+							<shadedPattern>net.ssterling.bukkitgreentext</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>

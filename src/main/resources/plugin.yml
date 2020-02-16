@@ -4,7 +4,7 @@ version: ${project.version}
 description: Add 4chan-style quoting to Minecraft server chat
 website: http://www.gitlab.com/ssterling/bukkitgreentext/
 
-main: net.ssterling.BukkitGreentext.BukkitGreentext
+main: net.ssterling.bukkitgreentext.BukkitGreentext
 api-version: 1.13
 awareness:
         - !@UTF8
