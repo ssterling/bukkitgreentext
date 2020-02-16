@@ -328,12 +328,12 @@ public class BukkitGreentext extends JavaPlugin
 			 * For example, if `:' is listed as an exception,
 			 * any message starting with `>:' isn't greenified,
 			 * such as in emoticons, e.g. `>:('. */
-			 for (String exception : config.getStringList("greentext-exceptions")) {
-				 if (message.startsWith(">" + exception)) {
-					 getLogger().fine("Aforementioned message begins with exception `>" + exception + "'; ignoring");
-					 return false;
-				 }
-			 }
+			for (String exception : config.getStringList("greentext-exceptions")) {
+				if (message.startsWith(">" + exception)) {
+					getLogger().fine("Aforementioned message begins with exception `>" + exception + "'; ignoring");
+					return false;
+				}
+			}
 		} else {
 			return false;
 		}
@@ -361,11 +361,11 @@ public class BukkitGreentext extends JavaPlugin
 
 			/* Same concept as in isValidGreentext() */
 			for (String exception : config.getStringList("orangetext-exceptions")) {
-				 if (message.endsWith(exception + "<")) {
-					 getLogger().fine("Aforementioned message ends with exception `" + exception + "<'; ignoring");
-					 return false;
-				 }
-			 }
+				if (message.endsWith(exception + "<")) {
+					getLogger().fine("Aforementioned message ends with exception `" + exception + "<'; ignoring");
+					return false;
+				}
+			}
 		} else {
 			return false;
 		}

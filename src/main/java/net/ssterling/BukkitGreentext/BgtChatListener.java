@@ -35,18 +35,18 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  * @version   2.0
  * @since     1.0
  */
- public class BgtChatListener implements Listener
- {
-	 private final BukkitGreentext plugin;
+public class BgtChatListener implements Listener
+{
+	private final BukkitGreentext plugin;
 
-	 public BgtChatListener(BukkitGreentext plugin)
-	 {
-		 this.plugin = plugin;
-	 }
+	public BgtChatListener(BukkitGreentext plugin)
+	{
+		this.plugin = plugin;
+	}
 
-	 @EventHandler
-	 public void onPlayerChat(AsyncPlayerChatEvent e)
-	 {
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent e)
+	{
 		Player player = e.getPlayer();
 		
 		/* Decrease CPU/IO load by initialising these only once */
@@ -63,5 +63,5 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 				plugin.eventMakeOrangetext(e);
 			}
 		}
-	 }
- }
+	}
+}
