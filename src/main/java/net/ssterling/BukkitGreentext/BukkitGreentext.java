@@ -49,7 +49,7 @@ import org.bstats.bukkit.Metrics;
 
 /**
  * @author	Seth Price <ssterling AT firemail DOT cc>
- * @version	2.2
+ * @version	3.0
  * @since	1.0
  */
 public class BukkitGreentext extends JavaPlugin
@@ -70,11 +70,6 @@ public class BukkitGreentext extends JavaPlugin
 	 * Whether Greentext is enabled for any player.
 	 */
 	private static boolean enabled_by_default;
-
-	/**
-	 * Whether debug messages are enabled.
-	 */
-	private static boolean is_debug;
 
 	/**
 	 * Spigot project ID (for update checker).
