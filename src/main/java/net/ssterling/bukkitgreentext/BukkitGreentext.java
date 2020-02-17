@@ -29,11 +29,8 @@ import java.util.UUID;
 import java.util.List;
 import java.util.logging.Level;
 import java.io.File;
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,7 +42,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.PluginLogger;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bstats.bukkit.Metrics;
+import net.ssterling.updatechecker.UpdateChecker;
 
 /**
  * @author	Seth Price <ssterling AT firemail DOT cc>
@@ -74,7 +73,7 @@ public class BukkitGreentext extends JavaPlugin
 	/**
 	 * Spigot project ID (for update checker).
 	 */
-	private static final int PROJECT_ID = 55295;
+	private static final String PROJECT_ID = "55295";
 
 	/**
 	 * The file pointer for the persistent hashmap.
@@ -189,33 +188,33 @@ public class BukkitGreentext extends JavaPlugin
 		/* Read from config whether greentext must be manually enabled per-player */
 		enabled_by_default = config.getBoolean("enabled-by-default");
 
-		getLogger().info("Successfully initialised " + pdf.getName() + " v" + pdf.getVersion());
+		/* Asynchronously check for updates on the Spigot resource page */
+		if (config.getBoolean("check-for-updates")) {
+			String current_version = pdf.getVersion();
+			UpdateChecker update_checker = new UpdateChecker(PROJECT_ID, current_version);
 
-		/* Asynchronously check for updates on the Spigot resource page
-		 * (XXX this will work even if current version is newer, i.e. unreleased SNAPSHOT;
-		 * this is to keep things simple as 99.8% of people won't be building something
-		 * like this from the repo) */
-		Thread update_checker = new Thread(() -> {
-			if (config.getBoolean("check-for-updates")) {
-				getLogger().fine("Checking for updates...");
-				String current_version = pdf.getVersion();
-				try {
-					URL update_url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + PROJECT_ID);
-					URLConnection update_conn = update_url.openConnection();
-					String new_version = new BufferedReader(new InputStreamReader(update_conn.getInputStream())).readLine();
-					if (!(new_version.equals(current_version))) {
-						getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
-					} else {
-						getLogger().info("No new version found");
+			getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+				@Override
+				public void run()
+				{
+					getLogger().fine("Checking for updates...");
+					try {
+						String new_version = update_checker.check();
+						if (new_version != null) {
+							getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
+						} else {
+							getLogger().info("No new version found");
+						}
+					} catch (Throwable ex) {
+						/* Don't spam a warning + stack trace on something so trivial
+						 * (especially if server isn't connected to the Internet) */
+						getLogger().info("Failed to check for updates");
 					}
-				} catch (Throwable ex) {
-					/* Don't spam a warning + stack trace on something so trivial
-					 * (especially if server isn't connected to the Internet) */
-					getLogger().info("Failed to check for updates");
 				}
-			}
-		});
-		update_checker.start();
+			}, 200L, 1728000L /* wait 10 seconds, then repeat every 24 hours */);
+		}
+
+		getLogger().info("Successfully initialised " + pdf.getName() + " v" + pdf.getVersion());
 	}
 
 	@Override
