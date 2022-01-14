@@ -1,7 +1,7 @@
 /*
  * BukkitGreentext - add 4chan-style quoting to Minecraft server chat
  *
- * Copyright 2018, 2019 Seth Price
+ * Copyright 2018, 2021 Seth Price
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -76,6 +76,11 @@ public class BukkitGreentext extends JavaPlugin
 	private static final String PROJECT_ID = "55295";
 
 	/**
+	 * bStats plugin ID (for metrics).
+	 */
+	private static final int BSTATS_ID = 2814;
+
+	/**
 	 * The file pointer for the persistent hashmap.
 	 */
 	private static File persistent_hashmap_file;
@@ -96,7 +101,7 @@ public class BukkitGreentext extends JavaPlugin
 	{
 		pm = getServer().getPluginManager();
 		pdf = this.getDescription();
-		metrics = new Metrics(this);
+		metrics = new Metrics(this, BSTATS_ID);
 
 		/* Save the default configuration file if not present; else, use the file */
 		getLogger().config("Loading configuration...");
