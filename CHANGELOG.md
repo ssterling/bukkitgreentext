@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v3.0.0 (2022/06/27)
+-------------------
+
+* Added support for 1.16+ RGB colors in greentext
+
 v2.2.2 (2020/02/14)
 -------------------
 
