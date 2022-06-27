@@ -46,6 +46,9 @@ Additionally, orangetext, an obscure feature
 [used probably once](https://www.reddit.com/r/BannedFrom4chan/comments/221co5/),
 can be disabled via config.
 
+If you want to take advantage of 1.16’s full RGB support and
+use 4chan-accurate colors in chat, set `use-hex-colors` as true.
+
 ### Permissions
 
 If `check-for-permissions` is set true in the config file,
