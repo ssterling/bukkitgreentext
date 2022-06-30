@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -95,6 +96,18 @@ public class BukkitGreentext extends JavaPlugin
 	private static PluginManager pm;
 	private static PluginDescriptionFile pdf;
 	private static Metrics metrics;
+
+	/* Necessary in order to use MockBukkit */
+	public BukkitGreentext()
+	{
+		super();
+	}
+
+	/* Necessary in order to use MockBukkit */
+	protected BukkitGreentext(JavaPluginLoader loader, PluginDescriptionFile description, File data_folder, File file)
+	{
+		super(loader, description, data_folder, file);
+	}
 
 	@Override
 	public void onEnable()
