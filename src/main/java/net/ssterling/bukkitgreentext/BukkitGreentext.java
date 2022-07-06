@@ -213,8 +213,8 @@ public class BukkitGreentext extends JavaPlugin
 
 		/* Asynchronously check for updates on the Spigot resource page */
 		if (config.getBoolean("check-for-updates")) {
-			String current_version = pdf.getVersion();
-			UpdateChecker update_checker = new UpdateChecker(PROJECT_ID, current_version);
+			final String current_version = pdf.getVersion();
+			final UpdateChecker update_checker = new UpdateChecker(PROJECT_ID, current_version);
 
 			getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 				@Override
