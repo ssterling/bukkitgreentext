@@ -148,10 +148,6 @@
 			<url>https://repo.papermc.io/repository/maven-public/</url>
 		</repository>
 		<repository>
-			<id>CodeMC</id>
-			<url>https://repo.codemc.org/repository/maven-public</url>
-		</repository>
-		<repository>
 			<id>ssterling-repo</id>
 			<url>https://www.ssterling.net/comp/maven-repo/</url>
 		</repository>
