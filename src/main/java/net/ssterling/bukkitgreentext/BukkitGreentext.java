@@ -114,7 +114,13 @@ public class BukkitGreentext extends JavaPlugin
 	{
 		pm = getServer().getPluginManager();
 		pdf = this.getDescription();
-		metrics = new Metrics(this, BSTATS_ID);
+
+		try {
+			metrics = new Metrics(this, BSTATS_ID);
+		} catch (UnsupportedClassVersionError ex) {
+			/* Bizarre edge case, but possible on old (nostalgia) servers */
+			getLogger().warning("Cannot load bStats metrics class due to outdated JRE: " + System.getProperty("java.version"));
+		}
 
 		/* Save the default configuration file if not present; else, use the file */
 		getLogger().config("Loading configuration...");
