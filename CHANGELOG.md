@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v3.1.0 (2022/06/07)
+-------------------
+
+* Changed build target to JDK 1.7 to enable use of plugin on older servers
+
 v3.0.0 (2022/06/27)
 -------------------
 
