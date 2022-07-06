@@ -266,13 +266,7 @@ public class BukkitGreentext extends JavaPlugin
 	 */
 	public void playerSetEnabled(final Player player, final boolean value)
 	{
-		String enabled_disabled;
-		if (value) {
-			enabled_disabled = "enabled";
-		} else {
-			enabled_disabled = "disabled";
-		}
-		getLogger().info("Set greentext " + enabled_disabled + " for player " + player.getName());
+		getLogger().info("Set greentext " + (value ? "enabled" : "disabled") + " for player " + player.getName());
 		enabled_for_player.put(player.getUniqueId(), value);
 	}
 
@@ -301,13 +295,7 @@ public class BukkitGreentext extends JavaPlugin
 	 */
 	public void globalSetEnabled(final boolean value)
 	{
-		String enabled_disabled;
-		if (value) {
-			enabled_disabled = "enabled";
-		} else {
-			enabled_disabled = "disabled";
-		}
-		getLogger().info("Set greentext " + enabled_disabled + " for all players");
+		getLogger().info("Set greentext " + (value ? "enabled" : "disabled") + " for all players");
 		enabled_by_default = value;
 	}
 
