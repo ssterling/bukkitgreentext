@@ -1,7 +1,13 @@
 Changelog
 =========
 
-v3.1.0 (2022/06/07)
+v3.1.1 (2022/07/08)
+-------------------
+
+* Unincluded and added explicit checks for BungeeCord API to restore
+  usability on CraftBukkit servers
+
+v3.1.0 (2022/07/07)
 -------------------
 
 * Changed build target to JDK 1.7 to enable use of plugin on older servers

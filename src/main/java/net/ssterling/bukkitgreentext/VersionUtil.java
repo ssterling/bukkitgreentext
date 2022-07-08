@@ -28,7 +28,7 @@ import org.bukkit.Bukkit;
 
 /**
  * @author    Seth Price <sprice623 AT aol DOT com>
- * @version   3.0
+ * @version   3.1
  * @since     3.0
  */
 public final class VersionUtil
@@ -47,5 +47,23 @@ public final class VersionUtil
 		final int compare_major = Integer.parseInt(compare_to.split("\\.")[1].replaceAll("[\\(\\)]", ""));
 
 		return compare_major >= server_major ? true : false;
+	}
+
+	/**
+	 * Determine whether class is available for use at runtime.
+	 * Useful for detecting an API.
+	 *
+	 * @param class_name	Name of class.
+	 * @return true if exists, false otherwise
+	 * @since 3.1
+	 */
+	public static boolean classExists(String class_name)
+	{
+		try {
+			Class.forName(class_name);
+			return true;
+		} catch (ClassNotFoundException ex) {
+			return false;
+		}
 	}
 }

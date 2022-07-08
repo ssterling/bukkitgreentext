@@ -43,7 +43,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.scheduler.BukkitScheduler;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bstats.bukkit.Metrics;
 import net.ssterling.updatechecker.UpdateChecker;
 
@@ -212,9 +212,13 @@ public class BukkitGreentext extends JavaPlugin
 		/* Read from config whether greentext must be manually enabled per-player */
 		enabled_by_default = config.getBoolean("enabled-by-default");
 
+		/* Print one, not both */
 		if (config.getBoolean("use-hex-colors") && VersionUtil.compareVersions(getServer().getVersion(), "1.16")) {
 			getLogger().warning("1.16-style hex colors are enabled in config, but server is still running " + getServer().getVersion() + "; reverting to old-style formatting codes");
 			config.set("use-hex-colors", false); /* Intentionally does not save to file */
+		} else if (config.getBoolean("use-hex-colors") && !VersionUtil.classExists("net.md_5.bungee.api.ChatColor")) {
+			getLogger().warning("1.16-style hex colors are enabled in config, but server lacks the BungeeCord ChatColor API; reverting to old-style formatting codes");
+			config.set("use-hex-colors", false); /* ditto */
 		}
 
 		/* Asynchronously check for updates on the Spigot resource page */
@@ -403,7 +407,7 @@ public class BukkitGreentext extends JavaPlugin
 		}
 
 		final String color_code = config.getBoolean("use-hex-colors")
-			? ChatColor.of("#789922").toString()
+			? net.md_5.bungee.api.ChatColor.of("#789922").toString()
 			: ChatColor.GREEN.toString();
 
 		getLogger().finest("ChatEvent passed to `eventMakeGreentext()'; attempting to make message green: `" + message + "'");
@@ -434,7 +438,7 @@ public class BukkitGreentext extends JavaPlugin
 		}
 
 		final String color_code = config.getBoolean("use-hex-colors")
-			? ChatColor.of("#ff682d").toString()
+			? net.md_5.bungee.api.ChatColor.of("#ff682d").toString()
 			: ChatColor.GOLD.toString();
 
 		getLogger().finest("ChatEvent passed to `eventMakeOrangetext()'; attempting to make message gold (orange): `" + message + "'");
