@@ -6,8 +6,6 @@ website: https://www.gitlab.com/ssterling/bukkitgreentext/
 
 main: net.ssterling.bukkitgreentext.BukkitGreentext
 api-version: 1.19
-awareness:
-        - !@UTF8
 
 commands:
         greentext:
