@@ -206,7 +206,13 @@ public class BukkitGreentext extends JavaPlugin
 
 		getLogger().finest("Registering chat listener...");
 		try {
-			pm.registerEvents(new BgtChatListener(this), this);
+			if (!VersionUtil.compareVersions(getServer().getVersion(), "1.3")) {
+				/* Bukkit API 1.3.1 and above */
+				pm.registerEvents(new BgtChatListener(this), this);
+			} else {
+				/* Bukkit API 1.2.5 and below (doesn’t support AsyncPlayerChatEvent) */
+				pm.registerEvents(new BgtChatListenerSync(this), this);
+			}
 		} catch (Throwable ex) {
 			/* There's no use in having the plugin if it can't listen to chat */
 			getLogger().warning("Failed to register chat listener; shutting down");
