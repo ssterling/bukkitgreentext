@@ -51,7 +51,7 @@ import org.apache.commons.io.FileUtils;
 
 /**
  * @author	Seth Price <ssterling AT firemail DOT cc>
- * @version	3.0
+ * @version	3.1
  * @since	1.0
  */
 public class BukkitGreentext extends JavaPlugin
@@ -405,61 +405,65 @@ public class BukkitGreentext extends JavaPlugin
 	/**
 	 * Converts the message of a given event to Greentext.
 	 *
-	 * @param e         ChatEvent in which the message shall be replaced
-	 * @since 1.2
+	 * @param message	Message to convert.
+	 * @return Message, formatted as greentext.
+	 * @since 4.0
 	 */
-	public void eventMakeGreentext(AsyncPlayerChatEvent e)
+	public String stringAsGreentext(final String message)
 	{
-		/* Maven screams at me if I don't initialise this */
-		String message = "";
-		try {
-			message = e.getMessage();
-		} catch (Throwable ex) {
-			getLogger().warning("Failed to get message from ChatEvent");
-			ex.printStackTrace();
-			return;
-		}
-
 		final String color_code = config.getBoolean("use-hex-colors")
 			? net.md_5.bungee.api.ChatColor.of("#789922").toString()
 			: ChatColor.GREEN.toString();
+		return color_code + message;
+	}
 
-		getLogger().finest("ChatEvent passed to `eventMakeGreentext()'; attempting to make message green: `" + message + "'");
+	/**
+	 * Converts the message of a given event to Orangetext.
+	 *
+	 * @param message	Message to convert.
+	 * @return Message, formatted as orangetext.
+	 * @since 4.0
+	 */
+	public String stringAsOrangetext(final String message)
+	{
+		final String color_code = config.getBoolean("use-hex-colors")
+			? net.md_5.bungee.api.ChatColor.of("#ff682d").toString()
+			: ChatColor.GOLD.toString();
+		return color_code + message;
+	}
+
+	/**
+	 * Converts the message of a given event to Greentext.
+	 * @deprecated Use stringAsGreentext() instead.
+	 *
+	 * @param e         ChatEvent in which the message shall be replaced
+	 * @since 1.2
+	 */
+	@Deprecated
+	public void eventMakeGreentext(AsyncPlayerChatEvent e)
+	{
 		try {
-			e.setMessage(color_code + message);
+			e.setMessage(stringAsGreentext(e.getMessage()));
 		} catch (Throwable ex) {
-			getLogger().warning("Failed to make ChatEvent greentext: message `" + message + "'");
+			getLogger().warning("Failed to make ChatEvent greentext: message `" + e.getMessage() + "'");
 			ex.printStackTrace();
 		}
 	}
 
 	/**
 	 * Converts the message of a given event to Orangetext.
+	 * @deprecated Use stringAsOrangetext() instead.
 	 *
 	 * @param e         ChatEvent in which the message shall be replaced
 	 * @since 1.4
 	 */
+	@Deprecated
 	public void eventMakeOrangetext(AsyncPlayerChatEvent e)
 	{
-		/* Maven screams at me if I don't initialise this */
-		String message = "";
 		try {
-			message = e.getMessage();
+			e.setMessage(stringAsOrangetext(e.getMessage()));
 		} catch (Throwable ex) {
-			getLogger().warning("Failed to get message from ChatEvent");
-			ex.printStackTrace();
-			return;
-		}
-
-		final String color_code = config.getBoolean("use-hex-colors")
-			? net.md_5.bungee.api.ChatColor.of("#ff682d").toString()
-			: ChatColor.GOLD.toString();
-
-		getLogger().finest("ChatEvent passed to `eventMakeOrangetext()'; attempting to make message gold (orange): `" + message + "'");
-		try {
-			e.setMessage(color_code + message);
-		} catch (Throwable ex) {
-			getLogger().warning("Failed to make ChatEvent orangetext: message `" + message + "'");
+			getLogger().warning("Failed to make ChatEvent orangetext: message `" + e.getMessage() + "'");
 			ex.printStackTrace();
 		}
 	}

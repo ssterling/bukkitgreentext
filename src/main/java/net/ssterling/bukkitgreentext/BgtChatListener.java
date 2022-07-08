@@ -32,7 +32,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
  * @author    Seth Price <ssterling AT firemail DOT cc>
- * @version   2.0
+ * @version   3.1
  * @since     1.0
  */
 public class BgtChatListener implements Listener
@@ -56,11 +56,21 @@ public class BgtChatListener implements Listener
 		if (plugin.playerIsEnabled(player)) {
 			if (((check_perms && player.hasPermission("greentext.chat.green")) || ! check_perms)
 			    && plugin.isValidGreentext(e.getMessage())) {
-				plugin.eventMakeGreentext(e);
+				try {
+					e.setMessage(plugin.stringAsGreentext(e.getMessage()));
+				} catch (Throwable ex) {
+					plugin.getLogger().warning("Failed to make ChatEvent greentext: message `" + e.getMessage() + "'");
+					ex.printStackTrace();
+				}
 			} else if (plugin.config.getBoolean("allow-orangetext")
 			           && ((check_perms && player.hasPermission("greentext.chat.orange")) || ! check_perms)
 			           && plugin.isValidOrangetext(e.getMessage())) {
-				plugin.eventMakeOrangetext(e);
+				try {
+					e.setMessage(plugin.stringAsOrangetext(e.getMessage()));
+				} catch (Throwable ex) {
+					plugin.getLogger().warning("Failed to make ChatEvent orangetext: message `" + e.getMessage() + "'");
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
