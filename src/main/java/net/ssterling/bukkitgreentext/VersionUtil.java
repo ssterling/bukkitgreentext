@@ -24,11 +24,15 @@
  */
 package net.ssterling.bukkitgreentext;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 
 /**
  * @author    Seth Price <sprice623 AT aol DOT com>
- * @version   3.1
+ * @version   3.2
  * @since     3.0
  */
 public final class VersionUtil
@@ -41,12 +45,20 @@ public final class VersionUtil
 	 * @return true if server_version is newer than or the same as compare_to, false otherwise
 	 * @since 3.0
 	 */
-	public static boolean compareVersions(final String server_version, final String compare_to)
+	public static boolean compareVersions(final String server_version, final String compare_to) throws NumberFormatException
 	{
-		final int server_major = Integer.parseInt(server_version.split("\\.")[1].replaceAll("[\\(\\)]", ""));
-		final int compare_major = Integer.parseInt(compare_to.split("\\.")[1].replaceAll("[\\(\\)]", ""));
+		Pattern r = Pattern.compile("MC: (?<mmp>(\\d+\\.)+\\d+)");
+		Matcher m = r.matcher(server_version);
 
-		return compare_major >= server_major ? true : false;
+
+		if (!m.find()) {
+			throw new NumberFormatException("No match; server version string is nonstandard");
+		}
+
+		ComparableVersion server_comparable = new ComparableVersion(m.group("mmp"));
+		ComparableVersion compare_comparable = new ComparableVersion(compare_to);
+
+		return compare_comparable.compareTo(server_comparable) >= 0 ? true : false;
 	}
 
 	/**
