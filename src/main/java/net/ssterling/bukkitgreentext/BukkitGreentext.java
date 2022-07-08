@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.List;
 import java.util.logging.Level;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -46,6 +47,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.ChatColor;
 import org.bstats.bukkit.Metrics;
 import net.ssterling.updatechecker.UpdateChecker;
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author	Seth Price <ssterling AT firemail DOT cc>
@@ -138,7 +140,19 @@ public class BukkitGreentext extends JavaPlugin
 			getLogger().finest("Loading default `config.yml'...");
 			InputStream default_config_inputstream = getResource("config.yml");
 			InputStreamReader default_config_reader = new InputStreamReader(default_config_inputstream);
-			FileConfiguration default_config = YamlConfiguration.loadConfiguration(default_config_reader);
+			YamlConfiguration default_config = new YamlConfiguration();
+			try {
+				/* Bukkit API 1.7 and above */
+				default_config = YamlConfiguration.loadConfiguration(default_config_reader);
+			} catch (NoSuchMethodError ex) {
+				/* Bukkit API 1.6.4 and below: horrendous workaround */
+				getLogger().fine("Falling back to tmpfile method to acquire default config");
+				File default_config_tmpfile = File.createTempFile(pdf.getName(), ".tmp");
+				default_config_tmpfile.deleteOnExit();
+				FileOutputStream out = new FileOutputStream(default_config_tmpfile);
+				FileUtils.copyInputStreamToFile(default_config_inputstream, default_config_tmpfile);
+				default_config.load(default_config_tmpfile);
+			}
 
 			/* Add new config keys (i.e. added to the program since
 			 * the config file was last generated/updated) */
