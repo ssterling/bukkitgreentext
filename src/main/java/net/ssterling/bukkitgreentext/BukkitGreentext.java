@@ -134,9 +134,16 @@ public class BukkitGreentext extends JavaPlugin
 		getLogger().config("Loading configuration...");
 		try {
 			this.saveDefaultConfig();
+		} catch (NoSuchMethodError ex) {
+			getLogger().warning("Cannot check or save default configuration file; server version is too old: " + getServer().getVersion());
+		} catch (Throwable ex) {
+			getLogger().warning("Failed to check or save default configuration file.");
+			ex.printStackTrace();
+		}
+		try {
 			config = this.getConfig();
 		} catch (Throwable ex) {
-			getLogger().warning("Failed to load/save configuration file.  Using default configuration.");
+			getLogger().warning("Failed to load configuration file.  Proceed with caution.");
 			ex.printStackTrace();
 		}
 
