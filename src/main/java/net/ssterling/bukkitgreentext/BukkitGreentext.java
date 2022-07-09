@@ -27,6 +27,7 @@ package net.ssterling.bukkitgreentext;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -94,6 +95,11 @@ public class BukkitGreentext extends JavaPlugin
 	 * @see org.bukkit.configuration.file.FileConfiguration
 	 */
 	private static FileConfiguration persistent_hashmap;
+
+	/**
+	 * Alternate logger for old Bukkit server versions lacking getLogger().
+	 */
+	private static final Logger jank_logger = Logger.getLogger(BukkitGreentext.class.getCanonicalName());
 
 	private static PluginManager pm;
 	private static PluginDescriptionFile pdf;
@@ -284,6 +290,23 @@ public class BukkitGreentext extends JavaPlugin
 		} catch (Throwable ex) {
 			getLogger().warning("Failed to save persistent hashmap to disk.");
 			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * Wonky fix for lack of getLogger() on old Bukkit versions.
+	 *
+	 * @return plugin logger
+	 * @since 3.1
+	 */
+	@Override
+	public final Logger getLogger() {
+		try {
+			/* Bukkit API 1.1 and above */
+			return super.getLogger();
+		} catch (NoSuchMethodError ex) {
+			/* Bukkit API 1.0 and below */
+			return jank_logger;
 		}
 	}
 
