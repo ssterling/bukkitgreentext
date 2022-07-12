@@ -1,6 +1,26 @@
 Changelog
 =========
 
+v3.1.2 (2022/07/12)
+-------------------
+
+* Fixed VersionUtil bug on older servers
+* Removed awareness list from `plugin.yml`
+* Fixed error when reading default configuration on pre-1.7 servers
+* Changed greentextification to be string-based and thus
+  more readily used by external applications
+* Added non-asynchronous chat listener to enable use on
+  pre-1.3.1 servers lacking `AsyncPlayerChatEvent`
+* Added own implementation of `getLogger()` in partial
+  attempt to add Bukkit API 1.0 compatibility
+
+Plugin is now usable on CraftBukkit 1.1 and above.
+
+### Deprecated “API”
+
+* `eventMakeGreentext()`
+* `eventMakeOrangetext()`
+
 v3.1.1 (2022/07/08)
 -------------------
 
