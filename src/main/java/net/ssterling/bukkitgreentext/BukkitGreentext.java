@@ -97,7 +97,7 @@ public class BukkitGreentext extends JavaPlugin
 	private static FileConfiguration persistent_hashmap;
 
 	/**
-	 * Alternate logger for old Bukkit server versions lacking getLogger().
+	 * Alternate logger for old Bukkit server versions lacking {@link #getLogger()}.
 	 */
 	private static final Logger jank_logger = Logger.getLogger(BukkitGreentext.class.getCanonicalName());
 
@@ -470,7 +470,7 @@ public class BukkitGreentext extends JavaPlugin
 
 	/**
 	 * Converts the message of a given event to Greentext.
-	 * @deprecated Use stringAsGreentext() instead.
+	 * @deprecated Use {@link #stringAsGreentext()} instead.
 	 *
 	 * @param e         ChatEvent in which the message shall be replaced
 	 * @since 1.2
@@ -488,7 +488,7 @@ public class BukkitGreentext extends JavaPlugin
 
 	/**
 	 * Converts the message of a given event to Orangetext.
-	 * @deprecated Use stringAsOrangetext() instead.
+	 * @deprecated Use {@link stringAsOrangetext()} instead.
 	 *
 	 * @param e         ChatEvent in which the message shall be replaced
 	 * @since 1.4
