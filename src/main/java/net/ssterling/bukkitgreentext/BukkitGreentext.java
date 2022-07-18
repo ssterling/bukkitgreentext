@@ -46,8 +46,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.ChatColor;
+
 import org.bstats.bukkit.Metrics;
 import net.ssterling.updatechecker.UpdateChecker;
+import net.ssterling.bukkitversion.BukkitVersion;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -122,6 +124,8 @@ public class BukkitGreentext extends JavaPlugin
 	{
 		pm = getServer().getPluginManager();
 		pdf = this.getDescription();
+
+		BukkitVersion ver = new BukkitVersion();
 
 		try {
 			metrics = new Metrics(this, BSTATS_ID);
@@ -219,7 +223,7 @@ public class BukkitGreentext extends JavaPlugin
 
 		getLogger().finest("Registering chat listener...");
 		try {
-			if (!VersionUtil.compareVersions(getServer().getVersion(), "1.3")) {
+			if (ver.compareTo(new BukkitVersion("1.3", false), BukkitVersion.Component.MINOR) >= 0) {
 				/* Bukkit API 1.3.1 and above */
 				pm.registerEvents(new BgtChatListener(this), this);
 			} else {
@@ -246,7 +250,7 @@ public class BukkitGreentext extends JavaPlugin
 		enabled_by_default = config.getBoolean("enabled-by-default");
 
 		/* Print one, not both */
-		if (config.getBoolean("use-hex-colors") && VersionUtil.compareVersions(getServer().getVersion(), "1.16")) {
+		if (config.getBoolean("use-hex-colors") && ver.compareTo(new BukkitVersion("1.16", false), BukkitVersion.Component.MINOR) < 0) {
 			getLogger().warning("1.16-style hex colors are enabled in config, but server is still running " + getServer().getVersion() + "; reverting to old-style formatting codes");
 			config.set("use-hex-colors", false); /* Intentionally does not save to file */
 		} else if (config.getBoolean("use-hex-colors") && !VersionUtil.classExists("net.md_5.bungee.api.ChatColor")) {

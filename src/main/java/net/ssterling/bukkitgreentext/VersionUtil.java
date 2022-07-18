@@ -38,30 +38,6 @@ import org.apache.maven.artifact.versioning.ComparableVersion;
 public final class VersionUtil
 {
 	/**
-	 * Determine whether a given major version is newer than the other specified.
-	 *
-	 * @param server_version	Version to compare.
-	 * @param compare_to		Version to compare to.
-	 * @return true if server_version is newer than or the same as compare_to, false otherwise
-	 * @since 3.0
-	 */
-	public static boolean compareVersions(final String server_version, final String compare_to) throws NumberFormatException
-	{
-		Pattern r = Pattern.compile("MC: (?<mmp>(\\d+\\.)+\\d+)");
-		Matcher m = r.matcher(server_version);
-
-
-		if (!m.find()) {
-			throw new NumberFormatException("No match; server version string is nonstandard");
-		}
-
-		ComparableVersion server_comparable = new ComparableVersion(m.group("mmp"));
-		ComparableVersion compare_comparable = new ComparableVersion(compare_to);
-
-		return compare_comparable.compareTo(server_comparable) >= 0 ? true : false;
-	}
-
-	/**
 	 * Determine whether class is available for use at runtime.
 	 * Useful for detecting an API.
 	 *
