@@ -53,7 +53,6 @@ public class BgtChatListenerSync implements Listener
 		boolean check_perms = plugin.config.getBoolean("check-for-permission");
 
 		/* I apologise for the weird nesting. */
-		System.out.println("penis: " + String.valueOf(plugin.playerIsEnabled(player)));
 		if (plugin.playerIsEnabled(player)) {
 			if (((check_perms && player.hasPermission("greentext.chat.green")) || ! check_perms)
 			    && plugin.isValidGreentext(e.getMessage())) {
