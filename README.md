@@ -68,13 +68,9 @@ Notes
 I'm really bad at Java, and I need to know what's going on
 when I debug my subpar code.
 
-### Why is the earliest version supported only 1.1?
+### Will you support Beta 1.7.3 or earlier?
 
-I’ve tried everything all the way down to Bukkit API `1.8-R0.1-SNAPSHOT`,
-and none of the versions have `org.bukkit.event.Event.Priority` available,
-which is the only way to use `RegisterEvent()` on Bukkit v1.0.0.
-If you can find a workaround, *please* submit a merge request;
-I’d really like to get this working on b1.7.3 in particular.
+Working on it.
 
 ### Some to-do
 

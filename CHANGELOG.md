@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v3.1.3 (2022/07/20)
+-------------------
+
+* Added Bukkit API Forward Port to allow `registerEvent()` on pre-1.1 servers,
+* Replaced portion of `VersionUtil` with BukkitVersion
+
+Plugin is now usable on CraftBukkit b1.8.1 and above.
+
 v3.1.2 (2022/07/12)
 -------------------
 
