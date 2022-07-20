@@ -26,16 +26,18 @@ package net.ssterling.bukkitgreentext;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.plugin.EventExecutor;
 
 /**
  * @author    Seth Price <ssterling AT firemail DOT cc>
  * @version   3.2
  * @since     3.2
  */
-public class BgtChatListenerSync implements Listener
+public class BgtChatListenerSync implements EventExecutor, Listener
 {
 	private final BukkitGreentext plugin;
 
@@ -44,32 +46,36 @@ public class BgtChatListenerSync implements Listener
 		this.plugin = plugin;
 	}
 
-	@EventHandler
-	public void onPlayerChat(PlayerChatEvent e)
+	@Override
+	public void execute(Listener l, Event ee)
 	{
-		Player player = e.getPlayer();
-		
-		/* Decrease CPU/IO load by initialising these only once */
-		boolean check_perms = plugin.config.getBoolean("check-for-permission");
+		if (ee instanceof PlayerChatEvent) {
+			PlayerChatEvent e = (PlayerChatEvent)ee;
 
-		/* I apologise for the weird nesting. */
-		if (plugin.playerIsEnabled(player)) {
-			if (((check_perms && player.hasPermission("greentext.chat.green")) || ! check_perms)
-			    && plugin.isValidGreentext(e.getMessage())) {
-				try {
-					e.setMessage(plugin.stringAsGreentext(e.getMessage()));
-				} catch (Throwable ex) {
-					plugin.getLogger().warning("Failed to make ChatEvent greentext: message `" + e.getMessage() + "'");
-					ex.printStackTrace();
-				}
-			} else if (plugin.config.getBoolean("allow-orangetext")
-			           && ((check_perms && player.hasPermission("greentext.chat.orange")) || ! check_perms)
-			           && plugin.isValidOrangetext(e.getMessage())) {
-				try {
-					e.setMessage(plugin.stringAsOrangetext(e.getMessage()));
-				} catch (Throwable ex) {
-					plugin.getLogger().warning("Failed to make ChatEvent orangetext: message `" + e.getMessage() + "'");
-					ex.printStackTrace();
+			Player player = e.getPlayer();
+			
+			/* Decrease CPU/IO load by initialising these only once */
+			boolean check_perms = plugin.config.getBoolean("check-for-permission");
+
+			/* I apologise for the weird nesting. */
+			if (plugin.playerIsEnabled(player)) {
+				if (((check_perms && player.hasPermission("greentext.chat.green")) || ! check_perms)
+				    && plugin.isValidGreentext(e.getMessage())) {
+					try {
+						e.setMessage(plugin.stringAsGreentext(e.getMessage()));
+					} catch (Throwable ex) {
+						plugin.getLogger().warning("Failed to make ChatEvent greentext: message `" + e.getMessage() + "'");
+						ex.printStackTrace();
+					}
+				} else if (plugin.config.getBoolean("allow-orangetext")
+					   && ((check_perms && player.hasPermission("greentext.chat.orange")) || ! check_perms)
+					   && plugin.isValidOrangetext(e.getMessage())) {
+					try {
+						e.setMessage(plugin.stringAsOrangetext(e.getMessage()));
+					} catch (Throwable ex) {
+						plugin.getLogger().warning("Failed to make ChatEvent orangetext: message `" + e.getMessage() + "'");
+						ex.printStackTrace();
+					}
 				}
 			}
 		}
