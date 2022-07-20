@@ -42,9 +42,10 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.ChatColor;
@@ -52,6 +53,7 @@ import org.bukkit.ChatColor;
 import org.bstats.bukkit.Metrics;
 import net.ssterling.updatechecker.UpdateChecker;
 import net.ssterling.bukkitversion.BukkitVersion;
+import net.ssterling.forwardport.RegisterEvent;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -232,9 +234,9 @@ public class BukkitGreentext extends JavaPlugin
 				/* Bukkit API 1.2.5 thru 1.1 (doesn’t support AsyncPlayerChatEvent) */
 				pm.registerEvents(new BgtChatListenerSync(this), this);
 			} else {
-				/* Bukkit API 1.0 and below (doesn’t support registerEvents) */
-				pm.registerEvent(PlayerChatEvent.class, new BgtChatListenerSync(this),
-						EventPriority.NORMAL, new BgtChatListenerSync(this), this);
+				/* Bukkit API 1.0 and below (supports neither registerEvents nor EventPriority) */
+				RegisterEvent.registerChatEvent(new BgtChatListenerSync(this),
+						new BgtChatListenerSync(this), this);
 			}
 		} catch (Throwable ex) {
 			/* There's no use in having the plugin if it can't listen to chat */
