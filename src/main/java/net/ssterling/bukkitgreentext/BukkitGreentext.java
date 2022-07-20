@@ -209,7 +209,13 @@ public class BukkitGreentext extends JavaPlugin
 			/* Create the hashmap file if it doesn't exist */
 			if (!(persistent_hashmap_file.exists())) {
 				getLogger().fine("`playermap.yml' doesn't exist; creating");
-				saveResource("playermap.yml", false);
+				try {
+					/* Canonical method */
+					saveResource("playermap.yml", false);
+				} catch (NoSuchMethodError ex) {
+					/* Bukkit API 1.0 and below (doesn’t support saveResource) */
+					FileUtils.touch(persistent_hashmap_file);
+				}
 			}
 
 			persistent_hashmap = new YamlConfiguration();
