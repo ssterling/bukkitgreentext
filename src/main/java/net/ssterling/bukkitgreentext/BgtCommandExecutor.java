@@ -32,7 +32,7 @@ import org.bukkit.ChatColor;
 
 /**
  * @author    Seth Price <ssterling AT firemail DOT cc>
- * @version   2.1
+ * @version   3.1
  * @since     1.0
  */
 public class BgtCommandExecutor implements CommandExecutor
@@ -47,6 +47,14 @@ public class BgtCommandExecutor implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 	{
+		// TODO: put this in ForwardPort instead
+		String reset_code = null;
+		try {
+			reset_code = ChatColor.RESET.toString();
+		} catch (NoSuchFieldError ex) {
+			reset_code = "§r";
+		}
+
 		/* Why is all this better than a `switch' statement or something, you may ask?
 		 * It probably isn't, but it at least saves my sanity by doing a lot of the
 		 * processing all up here instead of copy-pasted several times throughout
@@ -110,10 +118,10 @@ public class BgtCommandExecutor implements CommandExecutor
 		/* If a player sends `/greentext' with no arguments, toggle greentext on/off */
 		if (args.length == 0 && is_player) {
 			if (plugin.playerIsEnabled(player)) {
-				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " disabled.");
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " disabled.");
 				plugin.playerSetEnabled(player, false);
 			} else {
-				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " enabled.");
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " enabled.");
 				plugin.playerSetEnabled(player, true);
 			}
 			return true;
@@ -129,14 +137,14 @@ public class BgtCommandExecutor implements CommandExecutor
 
 			/* Player already has status set to value; ignore */
 			if (plugin.playerIsEnabled(player) == arg_enabled) {
-				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " already " + enabled_disabled + ".");
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " already " + enabled_disabled + ".");
 				return true;
 			}
 
 			/* Method `playerSetEnabled()' already logs to the console,
 			 * so only pretty-print to players */
 			if (is_player) {
-				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " " + enabled_disabled + ".");
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " " + enabled_disabled + ".");
 			}
 			plugin.playerSetEnabled(player, arg_enabled);
 			return true;
@@ -154,7 +162,7 @@ public class BgtCommandExecutor implements CommandExecutor
 			if (plugin.playerIsEnabled(target_player) == arg_enabled) {
 				/* Again, to keep consistency with the uncoloured console messages */
 				if (is_player) {
-					sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " already " + enabled_disabled + " for player " + target_player.getName() + ".");
+					sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " already " + enabled_disabled + " for player " + target_player.getName() + ".");
 				} else {
 					sender.sendMessage("Greentext already " + enabled_disabled + " for player " + target_player.getName());
 				}
@@ -164,7 +172,7 @@ public class BgtCommandExecutor implements CommandExecutor
 			/* Method `globalSetEnabled()' already logs to the console,
 			 * so only pretty-print to players */
 			if (is_player) {
-				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " " + enabled_disabled + " for player " + target_player.getName() + ".");
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " " + enabled_disabled + " for player " + target_player.getName() + ".");
 			}
 			plugin.playerSetEnabled(target_player, arg_enabled);
 			return true;
@@ -182,7 +190,7 @@ public class BgtCommandExecutor implements CommandExecutor
 			if (plugin.globalIsEnabled() == arg_enabled) {
 				/* Yet again, to keep consistency with the uncoloured console messages */
 				if (is_player) {
-					sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " already " + enabled_disabled + " globally.");
+					sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " already " + enabled_disabled + " globally.");
 				} else {
 					sender.sendMessage("Greentext already " + enabled_disabled + " globally");
 				}
@@ -192,7 +200,7 @@ public class BgtCommandExecutor implements CommandExecutor
 			/* Method `globalSetEnabled()' already logs to the console,
 			 * so only pretty-print to players */
 			if (is_player) {
-				sender.sendMessage(ChatColor.GREEN + ">greentext" + ChatColor.RESET + " " + enabled_disabled + " globally.");
+				sender.sendMessage(ChatColor.GREEN + ">greentext" + reset_code + " " + enabled_disabled + " globally.");
 			}
 			plugin.globalSetEnabled(arg_enabled);
 			return true;
