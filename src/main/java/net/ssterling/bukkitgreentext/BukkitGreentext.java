@@ -285,7 +285,7 @@ public class BukkitGreentext extends JavaPlugin
 					try {
 						String new_version = update_checker.check();
 						if (new_version != null) {
-							getLogger().info("New version " + new_version + " found (currently on " + current_version + "; download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
+							getLogger().info("New version " + new_version + " found (currently on " + current_version + "); download at: <https://www.spigotmc.org/resources/" + PROJECT_ID + "/>");
 						} else {
 							getLogger().info("No new version found");
 						}
