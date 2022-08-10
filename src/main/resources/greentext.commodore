@@ -1,0 +1,10 @@
+greentext {
+	on {
+		global;
+		target brigadier:string single_word;
+	}
+	off {
+		global;
+		target brigadier:string single_word;
+	}
+}

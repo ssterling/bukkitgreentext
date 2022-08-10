@@ -107,6 +107,12 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>me.lucko</groupId>
+			<artifactId>commodore</artifactId>
+			<version>2.2</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -128,11 +134,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.1</version>
 				<configuration>
 					<minimizeJar>true</minimizeJar>
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
+							<shadedPattern>net.ssterling.bukkitgreentext</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>me.lucko.commodore</pattern>
 							<shadedPattern>net.ssterling.bukkitgreentext</shadedPattern>
 						</relocation>
 					</relocations>
@@ -169,6 +180,10 @@
 		<repository>
 			<id>ssterling-repo</id>
 			<url>https://www.ssterling.net/comp/maven-repo/</url>
+		</repository>
+		<repository>
+			<id>minecraft-repo</id>
+			<url>https://libraries.minecraft.net/</url>
 		</repository>
 	</repositories>
 </project>

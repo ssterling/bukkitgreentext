@@ -55,6 +55,10 @@ import net.ssterling.updatechecker.UpdateChecker;
 import net.ssterling.bukkitversion.BukkitVersion;
 import net.ssterling.forwardport.RegisterEvent;
 import org.apache.commons.io.FileUtils;
+import me.lucko.commodore.Commodore;
+import me.lucko.commodore.CommodoreProvider;
+import me.lucko.commodore.file.CommodoreFileReader;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 
 /**
  * @author	Seth Price <ssterling AT firemail DOT cc>
@@ -258,6 +262,19 @@ public class BukkitGreentext extends JavaPlugin
 			/* Not having commands still provides limited functionality, however */
 			getLogger().warning("Failed to register command executor; proceed with caution");
 			ex.printStackTrace();
+		}
+
+		if (CommodoreProvider.isSupported()) {
+			getLogger().finest("Registering Commodore provider...");
+			try {
+				Commodore commodore = CommodoreProvider.getCommodore(this);
+				InputStream commodore_file = getResource("greentext.commodore");
+				LiteralCommandNode<?> command_node = CommodoreFileReader.INSTANCE.parse(commodore_file);
+				commodore.register(getCommand("greentext"), command_node);
+			} catch (Throwable ex) {
+				getLogger().warning("Failed to register Commodore provider; tab completion will be unavailable");
+				ex.printStackTrace();
+			}
 		}
 
 		/* Read from config whether greentext must be manually enabled per-player */
@@ -531,4 +548,5 @@ public class BukkitGreentext extends JavaPlugin
 			ex.printStackTrace();
 		}
 	}
+
 }
