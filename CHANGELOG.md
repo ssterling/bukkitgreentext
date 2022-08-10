@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v3.1.4 (2022/08/10)
+-------------------
+
+* Added Brigadier tab completion
+* Fixed typos in messages
+* Updated BukkitVersion dependency to 0.3.1
+
+Plugin is now usable on CraftBukkit b1.6 and above.
+
 v3.1.3 (2022/07/20)
 -------------------
 
