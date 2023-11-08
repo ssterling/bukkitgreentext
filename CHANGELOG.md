@@ -4,7 +4,8 @@ Changelog
 v3.1.5 (2023/11/07)
 -------------------
 
-* Explicitly specified Folia support
+* Added Folia support using Folia-specific scheduler
+  for update checker
 
 v3.1.4 (2022/08/10)
 -------------------
