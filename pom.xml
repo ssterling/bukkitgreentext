@@ -6,7 +6,7 @@
 
 	<name>BukkitGreentext</name>
 	<description>Add 4chan-style quoting to Minecraft server chat</description>
-	<version>3.1.4</version>
+	<version>3.1.5</version>
 	<url>http://www.gitlab.com/ssterling/bukkitgreentext/</url>
 
 	<properties>
@@ -57,10 +57,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.19-R0.1-SNAPSHOT</version>
-			<type>jar</type>
+			<groupId>io.papermc.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.20.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -84,8 +83,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.seeseemelk</groupId>
-			<artifactId>MockBukkit-v1.19</artifactId>
-			<version>2.86.1</version>
+			<artifactId>MockBukkit-v1.20</artifactId>
+			<version>3.9.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -169,10 +168,6 @@
 	</build>
 
 	<repositories>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
 		<repository>
 			<id>papermc-repo</id>
 			<url>https://repo.papermc.io/repository/maven-public/</url>

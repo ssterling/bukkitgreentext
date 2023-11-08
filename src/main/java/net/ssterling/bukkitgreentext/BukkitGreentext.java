@@ -29,10 +29,12 @@ import java.util.UUID;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.concurrent.TimeUnit;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.function.Consumer;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,6 +51,8 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.ChatColor;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 
 import org.bstats.bukkit.Metrics;
 import net.ssterling.updatechecker.UpdateChecker;
@@ -294,7 +298,10 @@ public class BukkitGreentext extends JavaPlugin
 			final String current_version = pdf.getVersion();
 			final UpdateChecker update_checker = new UpdateChecker(PROJECT_ID, current_version);
 
-			getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			/* Folia uses separate schedulers and a slightly different API;
+			 * this should account for that with minimal code repetition */
+			/* FIXME: total spaghetti; needs refactored */
+			final Runnable runnable = new Runnable() {
 				@Override
 				public void run()
 				{
@@ -312,7 +319,22 @@ public class BukkitGreentext extends JavaPlugin
 						getLogger().info("Failed to check for updates");
 					}
 				}
-			}, 200L, 1728000L /* wait 10 seconds, then repeat every 24 hours */);
+			};
+			final long DELAY = 200L;
+			final long PERIOD = 1728000L;
+			if (VersionUtil.classExists("io.papermc.paper.threadedregions.RegionizedServer")) {
+				/* Folia */
+				getServer().getAsyncScheduler().runAtFixedRate(this, new Consumer<ScheduledTask>() {
+					@Override
+					public void accept(ScheduledTask task) {
+						runnable.run();
+						task.cancel();
+					}
+				}, DELAY, PERIOD, TimeUnit.MILLISECONDS);
+			} else {
+				/* Not Folia */
+				getServer().getScheduler().scheduleSyncRepeatingTask(this, runnable, DELAY, PERIOD);
+			}
 		}
 
 		getLogger().info("Successfully initialised " + pdf.getName() + " v" + pdf.getVersion());
